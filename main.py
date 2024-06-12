@@ -5,7 +5,7 @@ import random
 # ---------------------------- CONSTANTS ------------------------------- #
 BACKGROUND_COLOR = "#B1DDC6"
 count = 0
-card = {}
+card = None
 
 # ---------------------------- PANDAS SET UP ------------------------------- #
 # Import data
@@ -18,13 +18,25 @@ print(data)
 
 # ---------------------------- NEW CARD ------------------------------- #
 
+def reset():
+    global card
+    # Cancel timer
+    window.after_cancel(card)
+    # Reset labels and canvas
+    canvas.itemconfig(lang_label, text="French")
+    canvas.itemconfig(card_img, image=card_front)
+    card = None
 
 def get_card():
     global card
+    reset()
     card = random.choice(data)
     fr_word = card["French"]
 
     canvas.itemconfig(word, text=fr_word)
+
+    # window.after_cancel(card)
+
     # print(card)
     # print(fr_word)
     # print(en_word)
@@ -36,7 +48,7 @@ def get_card():
 def card_flip():
     en_word = card["English"]
 
-    canvas.itemconfig(card, image=card_back)
+    canvas.itemconfig(card_img, image=card_back)
     canvas.itemconfig(lang_label, text="English", fill="white")
     canvas.itemconfig(word, text=en_word, fill="white")
 
@@ -58,7 +70,7 @@ canvas = Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0
 card_front = PhotoImage(file="images/card_front.png")
 card_back = PhotoImage(file="images/card_back.png")
 
-card = canvas.create_image(400, 263, image=card_front)
+card_img = canvas.create_image(400, 263, image=card_front)
 canvas.grid(column=0, row=0, columnspan=2)
 
 
