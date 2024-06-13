@@ -9,17 +9,17 @@ unknown_words = []
 
 
 # ---------------------------- PANDAS SET UP ------------------------------- #
-# Check for words_to_learn file, if exists, use that, else use french words
+# Check for words_to_learn file, if exists, use that, else use French words
 try:
     word_list = pd.read_csv("data/words_to_learn.csv")
 
 except FileNotFoundError:
-    word_list = pd.read_csv("data/french_words.csv")
+    original_data = pd.read_csv("data/french_words.csv")
+    data = original_data.to_dict(orient="records")
 
-finally:
-    df = pd.DataFrame(word_list)
+else:
     # Convert to list of dictionaries
-    data = df.to_dict(orient="records")
+    data = word_list.to_dict(orient="records")
 
 
 # ---------------------------- NEW CARD ------------------------------- #
@@ -58,7 +58,7 @@ def card_flip():
 def known():
     data.remove(current_card)
     to_learn = pd.DataFrame(data)
-    to_learn.to_csv("data/words_to_learn.csv")
+    to_learn.to_csv("data/words_to_learn.csv", index=False)
     get_card()
 
 
@@ -102,5 +102,3 @@ wrong_button.grid(column=0, row=1)
 get_card()
 
 window.mainloop()
-
-
