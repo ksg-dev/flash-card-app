@@ -4,8 +4,8 @@ import random
 
 # ---------------------------- CONSTANTS ------------------------------- #
 BACKGROUND_COLOR = "#B1DDC6"
-count = 0
-card = None
+# count = 0
+current_card = {}
 
 # ---------------------------- PANDAS SET UP ------------------------------- #
 # Import data
@@ -18,40 +18,33 @@ print(data)
 
 # ---------------------------- NEW CARD ------------------------------- #
 
-def reset():
-    global card
-    # Cancel timer
-    window.after_cancel(card)
-    # Reset labels and canvas
-    canvas.itemconfig(lang_label, text="French")
-    canvas.itemconfig(card_img, image=card_front)
-    card = None
+# def reset():
+#     global card
+#     # Cancel timer
+#     window.after_cancel(card)
+#     # Reset labels and canvas
+#     canvas.itemconfig(lang_label, text="French")
+#     canvas.itemconfig(card_img, image=card_front)
+#     card = None
+
 
 def get_card():
-    global card
-    reset()
-    card = random.choice(data)
-    fr_word = card["French"]
-
+    global current_card
+    current_card = random.choice(data)
+    fr_word = current_card["French"]
+    canvas.itemconfig(lang_label, text="French")
     canvas.itemconfig(word, text=fr_word)
 
-    # window.after_cancel(card)
 
-    # print(card)
-    # print(fr_word)
-    # print(en_word)
-
-# new_card()
 # ---------------------------- FLIP CARD ------------------------------- #
 
 
 def card_flip():
-    en_word = card["English"]
+    en_word = current_card["English"]
 
     canvas.itemconfig(card_img, image=card_back)
     canvas.itemconfig(lang_label, text="English", fill="white")
     canvas.itemconfig(word, text=en_word, fill="white")
-
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -60,7 +53,7 @@ def card_flip():
 window = Tk()
 window.title("Flashy")
 window.config(pady=50, padx=50, bg=BACKGROUND_COLOR)
-# window.minsize(width=900, height=650)
+
 window.after(3000, card_flip)
 
 # Canvas set up
@@ -75,9 +68,9 @@ canvas.grid(column=0, row=0, columnspan=2)
 
 
 # add text
-lang_label = canvas.create_text(400, 150, text="French", font=("Arial", 40, "italic"))
-word = canvas.create_text(400, 263, text="", font=("Arial", 60, "bold"))
-timer_text = canvas.create_text(400, 400, text="0")
+lang_label = canvas.create_text(400, 150, text="Title", font=("Arial", 40, "italic"))
+word = canvas.create_text(400, 263, text="word", font=("Arial", 60, "bold"))
+
 
 # Buttons
 correct = PhotoImage(file="images/right.png")
@@ -89,6 +82,8 @@ wrong_button = Button(image=wrong, highlightthickness=0, command=get_card)
 correct_button.grid(column=1, row=1)
 wrong_button.grid(column=0, row=1)
 
+# call card function to start w card
+get_card()
 
 window.mainloop()
 
