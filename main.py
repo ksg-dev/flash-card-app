@@ -32,8 +32,10 @@ def get_card():
     global current_card
     current_card = random.choice(data)
     fr_word = current_card["French"]
-    canvas.itemconfig(lang_label, text="French")
-    canvas.itemconfig(word, text=fr_word)
+    canvas.itemconfig(lang_label, text="French", fill="black")
+    canvas.itemconfig(word, text=fr_word, fill="black")
+    # change back to front of card
+    canvas.itemconfig(card_img, image=card_front)
 
 
 # ---------------------------- FLIP CARD ------------------------------- #
