@@ -4,7 +4,6 @@ import random
 
 # ---------------------------- CONSTANTS ------------------------------- #
 BACKGROUND_COLOR = "#B1DDC6"
-# count = 0
 current_card = {}
 
 # ---------------------------- PANDAS SET UP ------------------------------- #
@@ -18,24 +17,22 @@ print(data)
 
 # ---------------------------- NEW CARD ------------------------------- #
 
-# def reset():
-#     global card
-#     # Cancel timer
-#     window.after_cancel(card)
-#     # Reset labels and canvas
-#     canvas.itemconfig(lang_label, text="French")
-#     canvas.itemconfig(card_img, image=card_front)
-#     card = None
-
 
 def get_card():
-    global current_card
+    global current_card, flip_timer
+    # every time we click on new card, timer has to be invalidated
+    window.after_cancel(flip_timer)
+
     current_card = random.choice(data)
     fr_word = current_card["French"]
     canvas.itemconfig(lang_label, text="French", fill="black")
     canvas.itemconfig(word, text=fr_word, fill="black")
+
     # change back to front of card
     canvas.itemconfig(card_img, image=card_front)
+
+    # Begin flip timer again
+    flip_timer = window.after(3000, func=card_flip)
 
 
 # ---------------------------- FLIP CARD ------------------------------- #
@@ -56,7 +53,8 @@ window = Tk()
 window.title("Flashy")
 window.config(pady=50, padx=50, bg=BACKGROUND_COLOR)
 
-window.after(3000, card_flip)
+# call flip here so global and can be called with each card
+flip_timer = window.after(3000, card_flip)
 
 # Canvas set up
 canvas = Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
