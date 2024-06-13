@@ -5,15 +5,22 @@ import random
 # ---------------------------- CONSTANTS ------------------------------- #
 BACKGROUND_COLOR = "#B1DDC6"
 current_card = {}
+unknown_words = []
+
 
 # ---------------------------- PANDAS SET UP ------------------------------- #
-# Import data
-word_list = pd.read_csv("data/french_words.csv")
-df = pd.DataFrame(word_list)
-# Convert to list of dictionaries
-data = df.to_dict(orient="records")
+# Check for words_to_learn file, if exists, use that, else use french words
+try:
+    word_list = pd.read_csv("data/words_to_learn.csv")
 
-print(data)
+except FileNotFoundError:
+    word_list = pd.read_csv("data/french_words.csv")
+
+finally:
+    df = pd.DataFrame(word_list)
+    # Convert to list of dictionaries
+    data = df.to_dict(orient="records")
+
 
 # ---------------------------- NEW CARD ------------------------------- #
 
@@ -44,6 +51,15 @@ def card_flip():
     canvas.itemconfig(card_img, image=card_back)
     canvas.itemconfig(lang_label, text="English", fill="white")
     canvas.itemconfig(word, text=en_word, fill="white")
+
+# ---------------------------- SAVE PROGRESS ------------------------------- #
+
+
+def known():
+    data.remove(current_card)
+    to_learn = pd.DataFrame(data)
+    to_learn.to_csv("data/words_to_learn.csv")
+    get_card()
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -76,7 +92,7 @@ word = canvas.create_text(400, 263, text="word", font=("Arial", 60, "bold"))
 correct = PhotoImage(file="images/right.png")
 wrong = PhotoImage(file="images/wrong.png")
 
-correct_button = Button(image=correct, highlightthickness=0, command=get_card)
+correct_button = Button(image=correct, highlightthickness=0, command=known)
 wrong_button = Button(image=wrong, highlightthickness=0, command=get_card)
 
 correct_button.grid(column=1, row=1)
